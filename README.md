@@ -50,7 +50,7 @@ Errors that occure due to a misconfiguration, e.g. an unvalid weebhook url, are 
 | Method | Status |
 |--------|--------|
 | signup | ![Static Badge](https://img.shields.io/badge/Bad%20Requests-222cfd) |
-| signinWithPassword | ![Static Badge](https://img.shields.io/badge/Bad%20Requests-222cfd) |
+| signinWithPassword | ![Static Badge](https://img.shields.io/badge/Full%20Coverage-08c355) |
 | signInWithOtp |![Static Badge](https://img.shields.io/badge/No%20Coverage-eb1a00) |
 | signInWithOAuth | ![Static Badge](https://img.shields.io/badge/No%20Coverage-eb1a00) |
 | signInWithSSO | ![Static Badge](https://img.shields.io/badge/No%20Coverage-eb1a00) |
