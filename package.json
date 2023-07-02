@@ -7,7 +7,7 @@
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
-    "test": "mocha"
+    "test": "mocha 'test/**/*.ts'"
   },
   "repository": "https://github.com/joeldomke/supabase-errors-js",
   "author": "Joel Domke <joeldomke@aol.de>",
@@ -16,6 +16,9 @@
   "files": [
     "lib/**/*"
   ],
+  "dependencies": {
+    "@supabase/gotrue-js": "^2.37.0"
+  },
   "devDependencies": {
     "@types/chai": "^4.3.5",
     "@types/mocha": "^10.0.1",
@@ -30,8 +33,5 @@
     "tslint": "^6.1.3",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^5.1.3"
-  },
-  "dependencies": {
-    "@supabase/gotrue-js": "^2.37.0"
   }
 }
