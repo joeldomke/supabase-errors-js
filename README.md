@@ -59,7 +59,7 @@ Errors that occure due to a misconfiguration, e.g. an unvalid weebhook url, are 
 | verifyOtp | ![Static Badge](https://img.shields.io/badge/No%20Coverage-eb1a00) |
 | getSession | ![Static Badge](https://img.shields.io/badge/No%20Coverage-eb1a00) |
 | refreshSession | ![Static Badge](https://img.shields.io/badge/No%20Coverage-eb1a00) |
-| getUser | ![Static Badge](https://img.shields.io/badge/No%20Coverage-eb1a00) |
+| getUser | ![Static Badge](https://img.shields.io/badge/Partial%20Coverage-ffcc00) |
 | updateUser | ![Static Badge](https://img.shields.io/badge/No%20Coverage-eb1a00) |
 | reauthenticate | ![Static Badge](https://img.shields.io/badge/No%20Coverage-eb1a00) |
 | resend | ![Static Badge](https://img.shields.io/badge/No%20Coverage-eb1a00) |
