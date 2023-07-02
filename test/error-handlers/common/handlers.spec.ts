@@ -1,9 +1,8 @@
 import { AuthError } from '@supabase/gotrue-js';
 import { getErrorCode, handleError } from '../../../src/error-handlers/common/handlers';
-import { AuthErrorCode, ErrorMap } from '../../../src/types/error-config';
+import { ErrorMap } from '../../../src/types/error-config';
 import { ErrorHandler } from '../../../src/types/handlers';
 import * as sinon from 'sinon';
-import { handleSignInWithPasswordError } from '../../../src';
 import * as chai from 'chai';
 import { expect } from 'chai';
 import * as sinonChai from 'sinon-chai';

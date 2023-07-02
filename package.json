@@ -1,6 +1,6 @@
 {
   "name": "supabase-errors",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Maps Supabase errors to unique error codes based on their error message.",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
   "repository": "https://github.com/joeldomke/supabase-errors-js",
   "author": "Joel Domke <joeldomke@aol.de>",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "files": [
     "lib/**/*"
   ],
