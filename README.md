@@ -2,7 +2,7 @@
 
 An error handling library for the [Supabase JS](https://github.com/supabase/supabase-js) and [GoTrue JS](https://github.com/supabase/gotrue-js) auth clients. 
 
-The GoTrue API, which is also used by Supabase, does not return unique error codes. It does however return a descriptive error message. This package maps these error messages to more usable unique error codes. There is an error handler for every JS client function that calls the API. 
+The GoTrue API, which is also used by Supabase, does not return unique error codes. It does however, return a descriptive error message. This package maps these error messages to more usable unique error codes. There is an error handler for every JS client function that calls the API. 
 
 ## Quick start
 
@@ -34,7 +34,7 @@ const userErrorToMessage: Record<SignInWitPasswordErrorCode, string>  = {
 
 ## Documentation
 
-This package is currently work in progress. Below is a list with all functions that need an error handler and there current development status.
+This package is currently work in progress. Below is a list off all functions needing an error handler and their current development status.
 
 | Status | Description |
 |--------|-------------|
