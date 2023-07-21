@@ -20,11 +20,13 @@ const databaseErrorHandler = () => {};
 const emailLoginDisabledHandler = () => {};
 const unhandledErrorHandler = (errorCode: SignInWithPasswordErrorCode) => {};
 const unknownErrorHandler = (error: AuthError) => {};
+const internalErrorHandler = (errorCode: SignInWithPasswordErrorCode) => {};
 
 const databaseErrorSpy = sinon.spy(databaseErrorHandler);
 const emailLoginDisabledSpy = sinon.spy(emailLoginDisabledHandler);
 const unhandledErrorSpy = sinon.spy(unhandledErrorHandler);
 const unknownErrorSpy = sinon.spy(unknownErrorHandler);
+const internalErrorSpy = sinon.spy(internalErrorHandler);
 
 const defaultErrorHandler = new ErrorHandler({
   combineInternalErrors: false,
@@ -126,6 +128,45 @@ describe('', () => {
       it('call unknown error handler', () => {
         defaultErrorHandler.handleSignInWithPasswordError(error, handlers);
         expect(unknownErrorSpy).to.have.been.calledOnceWithExactly(error);
+      });
+    });
+  });
+
+  describe('Combined error handler', () => {
+    beforeEach(() => {
+      sinon.reset();
+    });
+
+    describe('should on existing handler', () => {
+      const error = authErrorDatabaseError;
+      const handlers: ErrorHandlerType<
+        SignInWithPasswordErrorConfig,
+        { combineInternalErrors: true; excludeTypes: never }
+      > = {
+        onInternalError: internalErrorSpy,
+        onEmailLoginDisabled: emailLoginDisabledSpy,
+        onUnhandledError: unhandledErrorSpy,
+        onUnknownError: unknownErrorSpy,
+      };
+
+      it('call correct handler with error code', () => {
+        combinedErrorHandler.handleSignInWithPasswordError(error, handlers);
+        expect(internalErrorSpy).to.have.been.calledOnceWithExactly('database-error');
+      });
+
+      it('not call other handlers', () => {
+        combinedErrorHandler.handleSignInWithPasswordError(error, handlers);
+        expect(emailLoginDisabledSpy).to.not.have.been.called;
+      });
+
+      it('not call unhandled error handler', () => {
+        combinedErrorHandler.handleSignInWithPasswordError(error, handlers);
+        expect(unhandledErrorSpy).to.not.have.been.called;
+      });
+
+      it('not call unknown error handler', () => {
+        combinedErrorHandler.handleSignInWithPasswordError(error, handlers);
+        expect(unknownErrorSpy).to.not.have.been.called;
       });
     });
   });
