@@ -11,7 +11,14 @@ import { KebabToPascalCase } from './utility';
 export interface ErrorHandlerConfig {
   combineInternalErrors: boolean;
   excludeTypes: AuthErrorType[];
+  disableLogging: boolean;
 }
+
+export type ErrorHandlerConfigWithDefaults<P extends Partial<ErrorHandlerConfig> | undefined> = {
+  combineInternalErrors: P extends { combineInternalErrors: boolean } ? P['combineInternalErrors'] : false;
+  excludeTypes: P extends { excludeTypes: ErrorHandlerConfig['excludeTypes'] } ? P['excludeTypes'] : never[];
+  disableLogging: P extends { disableLogging: boolean } ? P['disableLogging'] : false;
+};
 
 export type ConstructorFromConfig<T extends ErrorHandlerConfig> = Omit<T, 'excludeTypes'> & {
   excludeTypes: T['excludeTypes'][];
@@ -37,28 +44,5 @@ export type MaybeInternalErrorHandler<EC extends AuthErrorConfig> = CodeWithErro
   : {
       onInternalError?: (errorCode: CodeWithErrorType<EC, '5XX'>) => void;
     };
-
-// type TestErrorConfig =
-//   | {
-//       code: 'error-1';
-//       types: '4XX';
-//     }
-//   | {
-//       code: 'error-2';
-//       types: '5XX' | 'TypeScriptSafe';
-//     }
-//   | {
-//       code: 'error-3';
-//       types: '4XX' | '5XX';
-//     }
-//   | {
-//       code: 'error-4';
-//     };
-
-// type T = ErrorHandlerType<TestErrorConfig, { combineInternalErrors: false; excludeTypes: [] }>;
-
-// type TT = CodeWithErrorType<TestErrorConfig, 'TypeScriptSafe'>;
-
-// const h = {} as T;
 
 export type HandlerName<C extends string> = `on${KebabToPascalCase<C>}`;

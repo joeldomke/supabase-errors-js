@@ -1,5 +1,5 @@
 import { AuthError } from '@supabase/gotrue-js';
-import { ErrorHandlerType } from '../../../src/types/handlers';
+import { ErrorHandlerConfigWithDefaults, ErrorHandlerType } from '../../../src/types/handlers';
 import * as sinon from 'sinon';
 import * as chai from 'chai';
 import { expect } from 'chai';
@@ -28,14 +28,10 @@ const unhandledErrorSpy = sinon.spy(unhandledErrorHandler);
 const unknownErrorSpy = sinon.spy(unknownErrorHandler);
 const internalErrorSpy = sinon.spy(internalErrorHandler);
 
-const defaultErrorHandler = new ErrorHandler({
-  combineInternalErrors: false,
-  excludeTypes: [],
-});
+const defaultErrorHandler = new ErrorHandler();
 
 const combinedErrorHandler = new ErrorHandler({
   combineInternalErrors: true,
-  excludeTypes: [],
 });
 
 describe('', () => {
@@ -48,7 +44,7 @@ describe('', () => {
       const error = authErrorDatabaseError;
       const handlers: ErrorHandlerType<
         SignInWithPasswordErrorConfig,
-        { combineInternalErrors: false; excludeTypes: never }
+        ErrorHandlerConfigWithDefaults<{ combineInternalErrors: false; excludeTypes: never }>
       > = {
         onDatabaseError: databaseErrorSpy,
         onEmailLoginDisabled: emailLoginDisabledSpy,
@@ -81,7 +77,7 @@ describe('', () => {
       const error = authErrorDatabaseError;
       const handlers: ErrorHandlerType<
         SignInWithPasswordErrorConfig,
-        { combineInternalErrors: false; excludeTypes: never }
+        ErrorHandlerConfigWithDefaults<{ combineInternalErrors: false; excludeTypes: never }>
       > = {
         onEmailLoginDisabled: emailLoginDisabledSpy,
         onUnhandledError: unhandledErrorSpy,
@@ -108,7 +104,7 @@ describe('', () => {
       const error = authErrorUnknown;
       const handlers: ErrorHandlerType<
         SignInWithPasswordErrorConfig,
-        { combineInternalErrors: false; excludeTypes: never }
+        ErrorHandlerConfigWithDefaults<{ combineInternalErrors: false; excludeTypes: never }>
       > = {
         onEmailLoginDisabled: emailLoginDisabledSpy,
         onUnhandledError: unhandledErrorSpy,
@@ -141,7 +137,7 @@ describe('', () => {
       const error = authErrorDatabaseError;
       const handlers: ErrorHandlerType<
         SignInWithPasswordErrorConfig,
-        { combineInternalErrors: true; excludeTypes: never }
+        ErrorHandlerConfigWithDefaults<{ combineInternalErrors: true; excludeTypes: never }>
       > = {
         onInternalError: internalErrorSpy,
         onEmailLoginDisabled: emailLoginDisabledSpy,

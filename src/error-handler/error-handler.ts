@@ -1,5 +1,5 @@
 import { AuthError } from '@supabase/gotrue-js';
-import { ErrorHandlerConfig, ErrorHandlerType, HandlerName } from '../types/handlers';
+import { ErrorHandlerConfig, ErrorHandlerConfigWithDefaults, ErrorHandlerType, HandlerName } from '../types/handlers';
 import { AuthErrorConfig, ErrorMap } from '../types/error-config';
 import { CreateUserErrorConfig, createUserErrorMap } from './error-config/create-user';
 import { DeleteUserErrorConfig, deleteUserErrorMap } from './error-config/delete-user';
@@ -31,13 +31,24 @@ import { SignUpErrorConfig, signUpErrorMap } from './error-config/sign-up';
 import { UpdateUserErrorConfig, updateUserErrorMap } from './error-config/update-user';
 import { UpdateUserByIDErrorConfig, updateUserByIDErrorMap } from './error-config/update-user-by-id';
 
-type DefaultErrorHandlerConfig = { combineInternalErrors: false; excludeTypes: never[] };
-
-export class ErrorHandler<T extends ErrorHandlerConfig = DefaultErrorHandlerConfig> {
+export class ErrorHandler<
+  P extends Partial<ErrorHandlerConfig> | undefined,
+  T extends ErrorHandlerConfigWithDefaults<P> = ErrorHandlerConfigWithDefaults<P>,
+> {
   config: T;
 
-  constructor(config: T) {
-    this.config = config;
+  constructor(config?: P) {
+    this.config = this.withDefaults(config) as T;
+  }
+
+  private withDefaults<P extends Partial<ErrorHandlerConfig> | undefined>(
+    config: P,
+  ): ErrorHandlerConfigWithDefaults<P> {
+    return {
+      combineInternalErrors: config?.combineInternalErrors ?? false,
+      excludeTypes: config?.excludeTypes ?? [],
+      disableLogging: config?.disableLogging ?? false,
+    } as ErrorHandlerConfigWithDefaults<P>;
   }
 
   // Handlers
@@ -211,11 +222,13 @@ export class ErrorHandler<T extends ErrorHandlerConfig = DefaultErrorHandlerConf
 
     if (!errorCode) {
       handlers.onUnknownError?.call({}, error);
-      console.warn(
-        'Unknown error message: ',
-        error.message,
-        '\n\nPlease consider creating a new issue here: https://github.com/joeldomke/supabase-errors-js/issues/new',
-      );
+      if (!this.config.disableLogging) {
+        console.warn(
+          'Unknown error message: ',
+          error.message,
+          '\n\nPlease consider creating a new issue here: https://github.com/joeldomke/supabase-errors-js/issues/new',
+        );
+      }
       return;
     }
 
@@ -231,7 +244,7 @@ export class ErrorHandler<T extends ErrorHandlerConfig = DefaultErrorHandlerConf
     }
 
     const handlerName = this.errorCodeToHandlerName(errorCode);
-    const handler = handlers[handlerName];
+    const handler = handlers[handlerName as keyof typeof handlers];
     if (handler) {
       (handler as () => void)();
       return;
