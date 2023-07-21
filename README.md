@@ -2,39 +2,61 @@
 
 An error handling library for the [Supabase JS](https://github.com/supabase/supabase-js) and [GoTrue JS](https://github.com/supabase/gotrue-js) auth clients. 
 
-The GoTrue API, which is also used by Supabase, does not return unique error codes. It does however, return a descriptive error message. This package maps these error messages to more usable unique error codes. There is an error handler for every JS client function that calls the API. 
+The GoTrue API, which is also used by Supabase, does not return unique error codes. It does, however, return a descriptive error message. This package maps these error messages to more usable unique error codes. There is an error handler for every JS client function that calls the API. 
 
 ## Quick start
 
 Install
 
 ```bash
-npm install --save supabase-errors
+npm install supabase-errors
+// or
+yarn add supabase-errors
 ```
 
 Usage
 
 ```ts
-import { handleSignInWithPasswordError, type SignInWitPasswordErrorCode } from 'supabase-errors';
+import { ErrorHandler, type SignInWithPasswordErrorCode  } from 'supabase-errors';
 
 const { data, error } = await supabase.auth.signInWithPassword({...});
 
+const handler = new ErrorHandler({combineInternalErrors: true, exludeErrorTypes: ['TypeScriptSafe']});
+
 // Implement error handlers
-handleSignInWithPasswordError(error, {
+handler.handleSignInWithPasswordError(error, {
     onEmailLoginDisabled: () => console.log('Email logins are disabled'),
+    onInternalError: (errorCode) => console.log('Internal error: ', errorCode),
     onUnhandledError: (errorCode) => console.log('Unhandled error code: ', errorCode),
     onUnknownError: (error) => console.log('Unhandled auth error: ', error), 
 });
 
 // Create error mappings
-const userErrorToMessage: Record<SignInWitPasswordErrorCode, string>  = {
+const signInWithPasswordErrorMessageMap: Record<SignInWithPasswordErrorCode, string>  = {
   'email-login-disabled': 'Email logins are not supported',
 }
 ```
 
 ## Documentation
 
-This package is currently work in progress. Below is a list off all functions needing an error handler and their current development status.
+### Config
+
+| Parameter | Options | Default | Description |
+|-----------|---------|---------|-------------|
+combineInternalErrors | boolean | false | Removes all handlers of '5XX' errors and combines them in a handler called `onInternalError`. |
+| excludeErrorTypes | [ErrorType](#error-types)[] | [] | Removes all handlers of errors that match one of the excluded types. |
+| disableLogging | boolean | false | Controls whether unknown errors are logged.
+
+### Error types
+| Type | Description |
+|------|-------------|
+| 4XX | Bad request errors
+| 5XX | Internal errors
+| TypeScriptSafe | Errors that can not occur when the Typescript version of the Supabase or GoTrue client is used. For example, the 'only-email-or-phone-number' error can never occur when your code is type-safe.
+
+### Coverage
+
+This package is currently work in progress. Below is a list of all functions needing an error handler and their current development status.
 
 | Status | Description |
 |--------|-------------|
@@ -43,9 +65,9 @@ This package is currently work in progress. Below is a list off all functions ne
 | ![Static Badge](https://img.shields.io/badge/Partial%20Coverage-ffcc00) | Can handle some errors |
 | ![Static Badge](https://img.shields.io/badge/No%20Coverage-eb1a00) | Only `onUnknownError` is implemented |
 
-Errors that occure due to a misconfiguration, e.g. an unvalid weebhook url, are currently not included in the full coverage.
+Errors that occur due to a misconfiguration, e.g. an invalid webhook URL, are currently not included in the full coverage.
 
-### Error handlers
+#### Error handlers
 
 | Method | Status |
 |--------|--------|
